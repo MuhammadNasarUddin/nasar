@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Online Code Compiler</title>
+</head>
+<body>
+    <h1>Online Code Compiler</h1>
+    <form method="post" action="/runcode">
+        <label for="language">Select a language:</label>
+        <select name="language" id="language">
+            <option value="python">Python</option>
+            <option value="javascript">JavaScript</option>
+            <!-- Add more options for other languages -->
+        </select>
+        <br><br>
+        <label for="code">Enter your code:</label>
+        <br>
+        <textarea name="code" id="code" rows="10" cols="50"></textarea>
+        <br><br>
+        <input type="submit" value="Run Code">
+    </form>
+</body>
+</html>
