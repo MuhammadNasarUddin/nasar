@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>RehanLabs | MP3 to WAV Converter</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<style>
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        font-family: 'Courier New', Courier, monospace;
+    }
+
+    .container {
+        width:600px;
+        padding: 40px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+    }
+
+    .error {
+        color: red;
+        margin-top: 10px;
+    }
+</style>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">MP3 to WAV Converter</h1>
+        <form method="POST" action="/mp3towav" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="file">Upload an MP3 file</label>
+                <input type="file" class="form-control-file" id="file" name="file" accept=".mp3">
+            </div>
+            <button type="submit" class="btn btn-primary">Convert to WAV</button>
+        </form>
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+    </div>
+</body>
+</html>

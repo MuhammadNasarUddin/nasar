@@ -1,5 +1,12 @@
 from flask import Flask, render_template, request
-import subprocess
+from flask import Blueprint
+from qrcode import qrcode_app
+from password_generator import password_app
+from mp3towav import mp3towav_app
+from audiototext import audiototext_app
+
+
+
 
 app = Flask(__name__)
 
@@ -7,42 +14,11 @@ app = Flask(__name__)
 def index():
     return render_template('index.html')
 
-@app.route('/runcode', methods=['POST'])
-def run_code():
-    code = request.form['code']
-    language = request.form['language']
+app.register_blueprint(qrcode_app, url_prefix='/qrcode')
+app.register_blueprint(password_app, url_prefix='/password')
+app.register_blueprint(mp3towav_app, url_prefix='/mp3towav')
+app.register_blueprint(audiototext_app, url_prefix='/audiototext')
 
-    # Mapping of file extensions to programming languages
-    extensions = {
-        'python': 'py',
-        'javascript': 'js',
-        # Add more languages here
-    }
 
-    # Get the file extension based on the selected language
-    extension = extensions.get(language)
-
-    if extension:
-        # Write the code to a temporary file
-        filename = f'temp.{extension}'
-        with open(filename, 'w') as file:
-            file.write(code)
-
-        # Execute the code using subprocess
-        try:
-            result = subprocess.run([language, filename], capture_output=True, text=True, timeout=10)
-            output = result.stdout
-            error = result.stderr
-        except subprocess.TimeoutExpired:
-            output = "Execution timed out"
-            error = ""
-        
-        # Remove the temporary file
-        subprocess.run(['rm', filename])
-
-        return output if not error else error
-    else:
-        return "Invalid language selected"
-
-if __name__ == '__main__':
-    app.run(debug=True)
+if __name__ == "__main__":
+    app.run(debug=True,port=8001)

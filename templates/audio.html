@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio to Text Converter</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<style>
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        font-family: 'Courier New', Courier, monospace;
+    }
+
+    .container {
+        width: 100%;
+        padding: 40px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+    }
+</style>
+<body>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6">
+                <h2>Audio to Text Converter</h1>
+                <form method="POST" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <input type="file" name="file" accept=".wav" class="form-control-file">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Transcribe</button>
+                </form>
+                {% if message %}
+                <div class="alert alert-danger mt-4">{{ message }}</div>
+            {% endif %}
+            </div>
+            <div class="col-md-6">
+                {% if transcript %}
+                <div class="mt-4">
+                    <h3>Transcript:</h3>
+                    <p>{{ transcript }}</p>
+                </div>
+            {% endif %}
+            </div>
+    </div>
+</div>
+</body>
+</html>
