@@ -2,7 +2,7 @@ from flask import Flask, render_template, request,Blueprint
 import os
 import speech_recognition as sr
 
-audiototext_app = Blueprint('audiototext',__name__)
+audiototext_app = Blueprint('wavtotext',__name__)
 
 def transcribe_audio(audio_file):
     recognizer = sr.Recognizer()

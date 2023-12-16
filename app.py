@@ -17,7 +17,7 @@ def index():
 app.register_blueprint(qrcode_app, url_prefix='/qrcode')
 app.register_blueprint(password_app, url_prefix='/password')
 app.register_blueprint(mp3towav_app, url_prefix='/mp3towav')
-app.register_blueprint(audiototext_app, url_prefix='/audiototext')
+app.register_blueprint(audiototext_app, url_prefix='/wavtotext')
 
 
 if __name__ == "__main__":
