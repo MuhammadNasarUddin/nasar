@@ -10,6 +10,8 @@ from mp4 import mp4_app
 
 
 app = Flask(__name__)
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # Allow up to 10 megabytes
+
 
 @app.route('/')
 def index():
