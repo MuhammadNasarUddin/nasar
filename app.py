@@ -5,7 +5,7 @@ from password_generator import password_app
 from mp3towav import mp3towav_app
 from audiototext import audiototext_app
 from mp4 import mp4_app
-
+from resizer import resizer_app
 
 
 
@@ -22,7 +22,8 @@ app.register_blueprint(password_app, url_prefix='/password')
 app.register_blueprint(mp3towav_app, url_prefix='/mp3towav')
 app.register_blueprint(audiototext_app, url_prefix='/wavtotext')
 app.register_blueprint(mp4_app, url_prefix='/mp4')
+app.register_blueprint(resizer_app, url_prefix='/resizer')
 
 
 if __name__ == "__main__":
-    app.run(debug=True,port=8001)
+    app.run(debug=True,port=8000)

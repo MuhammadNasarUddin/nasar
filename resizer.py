@@ -25,7 +25,7 @@ def resize():
 
         resized_img = img.resize((width, height))
         output = io.BytesIO()
-        resized_img.save(output, format='JPEG')  # Change format if desired (JPEG, PNG, etc.)
+        resized_img.save(output, format='JPEG',)  # Change format if desired (JPEG, PNG, etc.)
 
         output.seek(0)
         return send_file(
