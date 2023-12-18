@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MP4 to MP3 Converter</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .container {
+
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">MP4 to MP3 Converter</h1>
+        <form method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <input type="file" class="form-control-file" name="file" accept="mp4" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Convert to MP3</button>
+        </form>
+        {% if message %}
+            <div class="alert alert-success mt-3" role="alert">
+                {{ message }}
+                {% if converted_file %}
+                <a id="downloadLink" href="{{ url_for('mp4.download', filename=converted_file) }}" class="btn btn-success mt-2" style="display: none;">Download Converted MP3</a>
+                <script>
+                    // Simulate a click on the download link
+                    document.getElementById('downloadLink').click();
+                </script>
+                {% endif %}
+            </div>
+        {% endif %}
+        {% if error_message %}
+            <div class="alert alert-danger mt-3" role="alert">
+                {{ error_message }}
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
