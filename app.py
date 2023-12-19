@@ -12,7 +12,7 @@ from supertec import supertec_app
 
 app = Flask(__name__)
 app.secret_key = 'nasar123'  # Set a secret key for session management
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # Allow up to 10 megabytes
+app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024  # Allow up to 10 megabytes
 
 
 @app.route('/')
