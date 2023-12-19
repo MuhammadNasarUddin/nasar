@@ -6,10 +6,12 @@ from mp3towav import mp3towav_app
 from audiototext import audiototext_app
 from mp4 import mp4_app
 from resizer import resizer_app
+from supertec import supertec_app
 
 
 
 app = Flask(__name__)
+app.secret_key = 'nasar123'  # Set a secret key for session management
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # Allow up to 10 megabytes
 
 
@@ -23,6 +25,7 @@ app.register_blueprint(mp3towav_app, url_prefix='/mp3towav')
 app.register_blueprint(audiototext_app, url_prefix='/wavtotext')
 app.register_blueprint(mp4_app, url_prefix='/mp4')
 app.register_blueprint(resizer_app, url_prefix='/resizer')
+app.register_blueprint(supertec_app, url_prefix='/bot')
 
 
 if __name__ == "__main__":
