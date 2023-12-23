@@ -7,13 +7,13 @@ from mp4 import mp4_app
 from resizer import resizer_app
 from supertec import supertec_app
 from flask import Flask
-import solara.server.flask
+
 
 
 
 app = Flask(__name__)
 app.secret_key = 'nasar123'  # Set a secret key for session management
-app.register_blueprint(solara.server.flask.blueprint, url_prefix="/solara/")
+
 app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024  # Allow up to 10 megabytes
 
 
