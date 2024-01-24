@@ -6,6 +6,7 @@ from audiototext import audiototext_app
 from mp4 import mp4_app
 from resizer import resizer_app
 from supertec import supertec_app
+from callannie import annie_app
 from flask import Flask
 
 
@@ -28,6 +29,7 @@ app.register_blueprint(audiototext_app, url_prefix='/wavtotext')
 app.register_blueprint(mp4_app, url_prefix='/mp4')
 app.register_blueprint(resizer_app, url_prefix='/resizer')
 app.register_blueprint(supertec_app, url_prefix='/bot')
+app.register_blueprint(annie_app,url_prefix='/annie')
 
 
 
