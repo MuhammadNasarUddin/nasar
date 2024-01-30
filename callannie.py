@@ -27,7 +27,7 @@ r.dynamic_energy_ratio = 1.5
 
 @callannieapp.route('/')
 def home():
-    return render_template('callannie.html')
+    return render_template('index.html')
 
 def listen():
     try:
@@ -71,8 +71,8 @@ def listen():
             audio_response.stream_to_file(speech_file_path)
 
             res_choice = {
-                'response_content':response_content,
-                'transcripted':transcripted,
+                'response_content': response_content,
+                'transcripted': transcripted,
             }
 
             # Play the generated audio in a separate thread
@@ -93,4 +93,3 @@ def listen():
 def process_audio():
     response_content = listen()
     return jsonify({'response': response_content})
-
