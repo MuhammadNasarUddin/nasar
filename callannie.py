@@ -27,7 +27,7 @@ r.dynamic_energy_ratio = 1.5
 
 @callannieapp.route('/')
 def home():
-    return render_template('index.html')
+    return render_template('callannie.html')
 
 def listen():
     try:
