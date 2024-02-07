@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify,Blueprint
+from flask import Flask, render_template, request, jsonify, Blueprint, send_from_directory
 import speech_recognition as sr
 from openai import OpenAI
 import os
@@ -6,10 +6,11 @@ from pathlib import Path
 from playsound import playsound
 import threading
 from dotenv import load_dotenv
-from pydub import AudioSegment
-from pydub.playback import play
 
-callannieapp = Blueprint('callannie',__name__)
+callannieapp = Blueprint('callannie', __name__ ,static_url_path='/static')
+
+speech_file_path = Path("static") / "output.mp3"
+
 
 # Load environment variables from .env
 load_dotenv()
@@ -25,27 +26,21 @@ r.dynamic_energy_threshold = True
 r.dynamic_energy_adjustment_damping = 0.15
 r.dynamic_energy_ratio = 1.5
 
+
+
+
+
 @callannieapp.route('/')
 def home():
     return render_template('callannie.html')
 
+
 def listen():
-    try:
-        with sr.Microphone() as source:
-            audio_data = r.listen(source, timeout=duration, phrase_time_limit=duration)
-
-        audio_path = 'audio.wav'
-        with open(audio_path, 'wb') as audio_file:
-            audio_file.write(audio_data.get_wav_data())
-
-        with sr.AudioFile(audio_path) as source:
-            audio_data = r.record(source)
-            text = r.recognize_google(audio_data, key=None, language="en-US", show_all=False)
-            print("you said:", text)
-
-            # Recognize speech using Google's speech recognition
-            transcripted = r.recognize_google(audio_data)
-
+    try:    
+            
+            data = request.get_json()
+            transcript = data['transcript']
+        
             # Make API call to OpenAI for generating response
             response = client.chat.completions.create(
                 model="gpt-3.5-turbo",
@@ -55,14 +50,13 @@ def listen():
                     {"role": "user", "content": "Who are you?"},
                     {"role": "assistant", "content": "As an AI language model, I am programmed to assist you with your queries and concerns to the best of my abilities"},
                     {"role": "user", "content": "Where was it?"},
-                    {"role": "user", "content": f"This is the transcribed text: {transcripted}"}
+                    {"role": "user", "content": f"This is the transcribed text: {transcript}"}
                 ]
             )
 
             # Get AI response content
             response_content = response.choices[0].message.content
 
-            speech_file_path = Path(__file__).parent / "output.mp3"
             audio_response = client.audio.speech.create(
                 model="tts-1",
                 voice="echo",
@@ -72,7 +66,7 @@ def listen():
 
             res_choice = {
                 'response_content': response_content,
-                'transcripted': transcripted,
+                'transcript': transcript,
             }
 
             # Play the generated audio in a separate thread
@@ -89,7 +83,19 @@ def listen():
     except Exception as e:
         return f'An unexpected error occurred: {e}'
 
+
 @callannieapp.route('/process_audio', methods=['POST'])
 def process_audio():
-    response_content = listen()
-    return jsonify({'response': response_content})
+    try:
+        response_content = listen()
+        return jsonify(response_content)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    
+
+
+
+@callannieapp.route('/static/<filename>')
+def serve_static(filename):
+    return send_from_directory(callannieapp.static_folder, filename)
+

@@ -1,56 +1,147 @@
-<!-- templates/index.html -->
+<!-- index.html -->
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <title>Rehan AI Voice Assistant</title>
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    
+    <!-- Internal Styles -->
     <style>
         body {
             font-family: monospace;
-            text-align: left;
+            background-color: #0a0a0a;
         }
+        
         h1 {
-            color: #333;
+            font-weight: 900;
+            color: white;
         }
+        
         #response-content {
             margin-top: 20px;
+        }
+        
+        .instruction-marquee {
+            color: #ffcc00;
+            white-space: nowrap;
+            overflow: hidden;
+            box-sizing: border-box;
+            font-weight: 500;
         }
     </style>
 </head>
 <body>
-<div class="container-fluid col-lg-12 col-md-12 col-sm-12 mt-5">
-    <h1 style="font-weight: 900;">Rehan AI Voice Assistant</h1>
-    <br>
-    <form id="start-listening-form" method="post" action="/callannie/process_audio">
-        <button type="submit" class="btn btn-dark">Start Listening</button>
-    </form>
-    <div id="response-content"></div>
-</div>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const startListeningForm = document.getElementById('start-listening-form');
-        const responseContent = document.getElementById('response-content');
+    <!-- Instruction Marquee -->
+    <div class="container-fluid instruction-marquee">
+        <marquee behavior="scroll" direction="left">
+            "Welcome to Rehan AI Voice Assistant - Click the button to ask anything." 
+        </marquee>
+    </div>
 
-        startListeningForm.addEventListener('submit', function (event) {
-            event.preventDefault();
+    <!-- Main Content Container -->
+    <div class="container-fluid text-center col-lg-12 col-md-12 col-sm-12 mt-5">
+        <!-- Title -->
+        <h1 style="font-weight: 900;">Rehan AI Voice Assistant</h1>
+        
+        <!-- Ask Button -->
+        <br>
+        <button id="start-listening-form" class="btn btn-secondary">
+            <i class="bi bi-mic"></i> 
+        </button>
+        
+        
+        <!-- Response Content -->
+        <div class="mt-5" id="response-content"></div>
+    </div>
 
-            // Request microphone access
-            navigator.mediaDevices.getUserMedia({ audio: true })
-                .then(function (stream) {
-                    // Microphone access granted, submit the form
-                    startListeningForm.submit();
+    <!-- Scripts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const recognition = new webkitSpeechRecognition();
+            recognition.continuous = false;
+            recognition.lang = 'en-US';
+            const responseContent = document.getElementById('response-content');
+    
+            // Function to play audio with timestamp
+            function playAudio(audioSrc) {
+                const timestamp = new Date().getTime();
+                const updatedSrc = `${audioSrc}?v=${timestamp}`;
+                const audio = new Audio(updatedSrc);
+                audio.play();
+            }
+    
+            // Function to update the response content on the page
+            function updateResponseContent(content, color) {
+                responseContent.innerHTML = `<p style="color:${color};font-weight:bolder;"><i class="bi bi-robot"></i> ${content}</p>`;
+                playAudio('/static/output.mp3');
+            }
+    
+            recognition.onresult = function (event) {
+                const transcript = event.results[0][0].transcript;
+                console.log('You said:', transcript);
+    
+                // Display the transcript in the HTML
+                responseContent.innerHTML = '<p style="color:red;font-weight:bolder;"><i class="bi bi-person-circle">  </i> ' + transcript + '</p>';
+    
+                // Show processing message while waiting for the response
+                responseContent.innerHTML += '<p style="color:#666;font-weight:bolder;"><i class="bi bi-hourglass"></i> Processing...</p>';
+    
+                // Send the transcript to your Flask server for chat completion
+                fetch('/callannie/process_audio', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ transcript }),
                 })
-                .catch(function (error) {
-                    // Microphone access denied
-                    responseContent.innerHTML = '<p>Microphone access denied. Please allow access to use the voice assistant.</p>';
+                .then(response => response.json())
+                .then(data => {
+                    // Display the response content in the HTML
+                    if (data.response_content) {
+                        // Remove newline characters from the response content
+                        const cleanResponse = JSON.stringify(data.response_content).replace(/\n/g, '');
+    
+                        // Display the response content in the HTML without newline characters
+                        updateResponseContent(cleanResponse, '#00ff00');
+                    } else {
+                        console.error('Error in AI response:', data.error);
+    
+                        // Remove newline characters from the error message
+                        const cleanError = data.error.replace(/\n/g, '');
+    
+                        // Display the error message in the HTML without newline characters
+                        responseContent.innerHTML = '<p style="color:#ff0000;font-weight:bolder;">Error in AI response ' + cleanError + '</p>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error in fetch:', error);
+                    responseContent.innerHTML = '<p style="color:#ff0000;font-weight:bolder;">Error in fetch: ' + error.message + '</p>';
                 });
+            };
+    
+            recognition.onend = function () {
+                // Show a message when speech recognition ends without a response
+                if (responseContent.innerHTML.trim() === '') {
+                    responseContent.innerHTML = '<p style="color:#ff0000;font-weight:bolder;">No response received. Please try again.</p>';
+                }
+            };
+    
+            document.getElementById('start-listening-form').addEventListener('click', function () {
+                // Show loading message or spinner when starting recognition
+                responseContent.innerHTML = '<p style="color:#666;font-weight:bolder;"><i class="bi bi-hourglass"></i> Waiting for response...</p>';
+                recognition.start();
+            });
         });
-    });
-</script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    </script>
+
+    <!-- Bootstrap Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </body>
 </html>
 
