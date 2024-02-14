@@ -5,9 +5,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rehan AI Voice Assistant</title>
-    
+    <title>RehanLabs | Voice Assistant</title>    
     <!-- External Stylesheets -->
+    <link rel="icon" href="/static/favicon.png" type="image/png">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     
@@ -15,12 +15,12 @@
     <style>
         body {
             font-family: monospace;
-            background-color: #0a0a0a;
+            background-color: white;
         }
         
         h1 {
             font-weight: 900;
-            color: white;
+            color: black;
         }
         
         #response-content {
@@ -28,71 +28,85 @@
         }
         
         .instruction-marquee {
-            color: #ffcc00;
+            color:black;
             white-space: nowrap;
             overflow: hidden;
             box-sizing: border-box;
             font-weight: 500;
         }
+        #version-footer {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        font-size: 14px;
+        text-align: left;
+        color: #888;
+    }
+
+        
     </style>
 </head>
 <body>
     <!-- Instruction Marquee -->
+    <div class="container col-lg-12 col-md-12 col-sm-12">
     <div class="container-fluid instruction-marquee">
         <marquee behavior="scroll" direction="left">
-            "Welcome to Rehan AI Voice Assistant - Click the button to ask anything." 
+            "Welcome to Rehan AI Voice Assistant - Click The Button To Ask Anything - Powered By GPT-3 - Developed By RehanLabs." 
         </marquee>
     </div>
 
     <!-- Main Content Container -->
-    <div class="container-fluid text-center col-lg-12 col-md-12 col-sm-12 mt-5">
+    <div class="container-fluid text-center  mt-5">
         <!-- Title -->
         <h1 style="font-weight: 900;">Rehan AI Voice Assistant</h1>
         
         <!-- Ask Button -->
         <br>
-        <button id="start-listening-form" class="btn btn-secondary">
-            <i class="bi bi-mic"></i> 
-        </button>
+
+        <img id="start-listening-form" src="/static/podcast2.png" width="54" height="54" alt="">
+        <img style="display: none;" width="90" height="90" id="start-listening-form-with-gif" src="/static/podcast.gif"  alt="Animated GIF">
+        
         
         
         <!-- Response Content -->
         <div class="mt-5" id="response-content"></div>
     </div>
+</div>
 
+<div id="version-footer" class="text-center mt-5">
+    <p>Version 2.0.0</p>
+    <!-- You can replace "Version 1.0.0" with your actual version information -->
+</div>
     <!-- Scripts -->
     <script>
+
         document.addEventListener('DOMContentLoaded', function () {
             const recognition = new webkitSpeechRecognition();
             recognition.continuous = false;
             recognition.lang = 'en-US';
             const responseContent = document.getElementById('response-content');
-    
-            // Function to play audio with timestamp
+            const micButton = document.getElementById('start-listening-form');
+            const gifButton = document.getElementById('start-listening-form-with-gif');
+        
             function playAudio(audioSrc) {
                 const timestamp = new Date().getTime();
                 const updatedSrc = `${audioSrc}?v=${timestamp}`;
                 const audio = new Audio(updatedSrc);
                 audio.play();
             }
-    
-            // Function to update the response content on the page
+        
             function updateResponseContent(content, color) {
                 responseContent.innerHTML = `<p style="color:${color};font-weight:bolder;"><i class="bi bi-robot"></i> ${content}</p>`;
                 playAudio('/static/output.mp3');
             }
-    
+        
             recognition.onresult = function (event) {
                 const transcript = event.results[0][0].transcript;
                 console.log('You said:', transcript);
-    
-                // Display the transcript in the HTML
+        
                 responseContent.innerHTML = '<p style="color:red;font-weight:bolder;"><i class="bi bi-person-circle">  </i> ' + transcript + '</p>';
-    
-                // Show processing message while waiting for the response
                 responseContent.innerHTML += '<p style="color:#666;font-weight:bolder;"><i class="bi bi-hourglass"></i> Processing...</p>';
-    
-                // Send the transcript to your Flask server for chat completion
+        
                 fetch('/callannie/process_audio', {
                     method: 'POST',
                     headers: {
@@ -102,20 +116,12 @@
                 })
                 .then(response => response.json())
                 .then(data => {
-                    // Display the response content in the HTML
                     if (data.response_content) {
-                        // Remove newline characters from the response content
                         const cleanResponse = JSON.stringify(data.response_content).replace(/\n/g, '');
-    
-                        // Display the response content in the HTML without newline characters
-                        updateResponseContent(cleanResponse, '#00ff00');
+                        updateResponseContent(cleanResponse, 'green');
                     } else {
                         console.error('Error in AI response:', data.error);
-    
-                        // Remove newline characters from the error message
                         const cleanError = data.error.replace(/\n/g, '');
-    
-                        // Display the error message in the HTML without newline characters
                         responseContent.innerHTML = '<p style="color:#ff0000;font-weight:bolder;">Error in AI response ' + cleanError + '</p>';
                     }
                 })
@@ -124,24 +130,32 @@
                     responseContent.innerHTML = '<p style="color:#ff0000;font-weight:bolder;">Error in fetch: ' + error.message + '</p>';
                 });
             };
-    
+        
             recognition.onend = function () {
-                // Show a message when speech recognition ends without a response
                 if (responseContent.innerHTML.trim() === '') {
                     responseContent.innerHTML = '<p style="color:#ff0000;font-weight:bolder;">No response received. Please try again.</p>';
                 }
+        
+                // Hide the GIF button after recognition ends
+                micButton.style.display = 'inline-block';
+                gifButton.style.display = 'none';
             };
-    
-            document.getElementById('start-listening-form').addEventListener('click', function () {
-                // Show loading message or spinner when starting recognition
-                responseContent.innerHTML = '<p style="color:#666;font-weight:bolder;"><i class="bi bi-hourglass"></i> Waiting for response...</p>';
+        
+            micButton.addEventListener('click', function () {
+                responseContent.innerHTML = '<p style="color:#666;font-weight:bolder;"><i class="bi bi-soundwave"></i> Listening ...</p>';
+                
+                // Show the GIF button when starting recognition
+                micButton.style.display = 'none';
+                gifButton.style.display = 'inline-block';
+        
                 recognition.start();
             });
         });
-    </script>
+        </script>
 
     <!-- Bootstrap Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </body>
 </html>
+
 
