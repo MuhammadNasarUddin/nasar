@@ -2,205 +2,239 @@
 
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RehanLabs | Voice Assistant</title>    
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RehanLabs | Voice Assistant</title>
     <!-- External Stylesheets -->
-    <link rel="icon" href="/static/favicon.png" type="image/png">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" href="/static/favicon.png" type="image/png" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-    
+
     <!-- Internal Styles -->
     <style>
-        body {
-            font-family: monospace;
-            background-color: white;
-        }
-        
-        h1 {
-            font-weight: 900;
-            color: black;
-        }
-        
-        #response-content {
-            margin-top: 20px;
-        }
-        
-        /* .instruction-marquee {
+      body {
+        font-family: monospace;
+        background-color: white;
+      }
+
+      h1 {
+        font-weight: 900;
+        color: black;
+      }
+
+      #response-content {
+        margin-top: 20px;
+      }
+
+      /* .instruction-marquee {
             color:black;
             white-space: nowrap;
             overflow: hidden;
             box-sizing: border-box;
             font-weight: 500;
         } */
-        #version-footer {
+      #version-footer {
         position: fixed;
         bottom: 0;
         width: 100%;
         font-size: 14px;
         text-align: left;
         color: #888;
-    }
+      }
 
       /* Add this style block to your existing styles in the head section of your HTML */
       .modal-body {
         font-size: 16px;
         line-height: 1.6;
-    }
-
-    .modal-body p {
-        margin-bottom: 10px;
-    }
-
-    .modal-body ol {
-        padding-left: 20px;
-        margin-bottom: 20px;
-    }
-
-    .modal-body li {
-        margin-bottom: 8px;
-    }
-
-        
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <!-- Instruction Marquee -->
     <div class="container col-lg-12 col-md-12 col-sm-12">
-    <!-- <div class="container-fluid instruction-marquee">
-        <marquee behavior="scroll" direction="left">
-            "Welcome to Rehan AI Voice Assistant - Click The Button To Ask Anything - Powered By GPT-3 - Developed By RehanLabs." 
-        </marquee>
-    </div> -->
-
-    <!-- Main Content Container -->
-    <div class="container-fluid text-center  mt-5">
+      <!-- Main Content Container -->
+      <div class="container-fluid text-center mt-5">
         <!-- Title -->
-        <h1 style="font-weight: 900;">Rehan AI Voice Assistant</h1>
-        
+        <h1 style="font-weight: 900">Rehan AI Voice Assistant</h1>
+
         <!-- Ask Button -->
-        <br>
+        <br />
 
-        <img id="start-listening-form" src="/static/podcast2.png" width="54" height="54" alt="">
-        <img style="display: none;" width="90" height="90" id="start-listening-form-with-gif" src="/static/podcast.gif"  alt="Animated GIF">
-        
-        
-        
+        <img
+          id="start-listening-form"
+          src="/static/podcast2.png"
+          width="54"
+          height="54"
+          alt=""
+        />
+        <img
+          style="display: none"
+          width="90"
+          height="90"
+          id="start-listening-form-with-gif"
+          src="/static/podcast.gif"
+          alt="Animated GIF"
+        />
+
         <!-- Response Content -->
-        <div class="mt-5" id="response-content"></div>
+      </div>
+      <div class="mt-5 container-fluid text-left" id="response-content"></div>
     </div>
-</div>
 
-
-<div class="modal fade" id="instructionModal" tabindex="-1" role="dialog" aria-labelledby="instructionModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div
+      class="modal fade"
+      id="instructionModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="instructionModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="instructionModalLabel"><strong>Instructions</strong></h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p>Follow these steps to use the voice assistant:</p>
-                <ol>
-                    <li>Click the microphone button to start listening.</li>
-                    <li>Speak clearly and ask your question.</li>
-                    <li>Wait for the processing to complete.</li>
-                </ol>
-            </div>
+          <div class="modal-header">
+            <h5 class="modal-title" id="instructionModalLabel">
+              <strong>Instructions</strong>
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <p>Follow these steps to use the voice assistant:</p>
+            <ol>
+              <li>Click the microphone button to start listening.</li>
+              <li>Speak clearly and ask your question.</li>
+              <li>Wait for the processing to complete.</li>
+            </ol>
+          </div>
         </div>
+      </div>
     </div>
-</div>
 
-<footer id="version-footer" class="text-center mt-5 bg-black p-3">
-    <p>&copy; 2024 RehanLabs. All rights reserved. | Version 2.0.0</p>
-    <!-- You can replace "Version 2.0.0" with your actual version information -->
-</footer>
+    <footer id="version-footer" class="text-center mt-5 bg-black p-3">
+      <p>&copy; 2024 RehanLabs. All rights reserved. | Version 2.0.0</p>
+      <!-- You can replace "Version 2.0.0" with your actual version information -->
+    </footer>
     <!-- Scripts -->
     <script>
-    // Open the instruction modal when the page loads
-    $(document).ready(function () {
-        $('#instructionModal').modal('show');
-    });
+      // Open the instruction modal when the page loads
+      $(document).ready(function () {
+        $("#instructionModal").modal("show");
+      });
 
-        document.addEventListener('DOMContentLoaded', function () {
-            const recognition = new webkitSpeechRecognition();
-            recognition.continuous = false;
-            recognition.lang = 'en-US';
-            const responseContent = document.getElementById('response-content');
-            const micButton = document.getElementById('start-listening-form');
-            const gifButton = document.getElementById('start-listening-form-with-gif');
-        
-            function playAudio(audioSrc) {
-                const timestamp = new Date().getTime();
-                const updatedSrc = `${audioSrc}?v=${timestamp}`;
-                const audio = new Audio(updatedSrc);
-                audio.play();
-            }
-        
-            function updateResponseContent(content, color) {
-                responseContent.innerHTML = `<p style="color:${color};font-weight:bolder;"><i class="bi bi-robot"></i> ${content}</p>`;
-                playAudio('/static/output.mp3');
-            }
-        
-            recognition.onresult = function (event) {
-                const transcript = event.results[0][0].transcript;
-                console.log('You said:', transcript);
-        
-                responseContent.innerHTML = '<p style="color:red;font-weight:bolder;"><i class="bi bi-person-circle">  </i> ' + transcript + '</p>';
-                responseContent.innerHTML += '<p style="color:#666;font-weight:bolder;"><i class="bi bi-hourglass"></i> Processing...</p>';
-        
-                fetch('/callannie/process_audio', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ transcript }),
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.response_content) {
-                        const cleanResponse = JSON.stringify(data.response_content).replace(/\n/g, '');
-                        updateResponseContent(cleanResponse, 'green');
-                    } else {
-                        console.error('Error in AI response:', data.error);
-                        const cleanError = data.error.replace(/\n/g, '');
-                        responseContent.innerHTML = '<p style="color:#ff0000;font-weight:bolder;">Error in AI response ' + cleanError + '</p>';
-                    }
-                })
-                .catch(error => {
-                    console.error('Error in fetch:', error);
-                    responseContent.innerHTML = '<p style="color:#ff0000;font-weight:bolder;">Error in fetch: ' + error.message + '</p>';
-                });
-            };
-        
-            recognition.onend = function () {
-                if (responseContent.innerHTML.trim() === '') {
-                    responseContent.innerHTML = '<p style="color:#ff0000;font-weight:bolder;">No response received. Please try again.</p>';
-                }
-        
-                // Hide the GIF button after recognition ends
-                micButton.style.display = 'inline-block';
-                gifButton.style.display = 'none';
-            };
-        
-            micButton.addEventListener('click', function () {
-                responseContent.innerHTML = '<p style="color:#666;font-weight:bolder;"></p>';
-                
-                // Show the GIF button when starting recognition
-                micButton.style.display = 'none';
-                gifButton.style.display = 'inline-block';
-        
-                recognition.start();
+      document.addEventListener("DOMContentLoaded", function () {
+        const recognition = new webkitSpeechRecognition();
+        recognition.continuous = false;
+        recognition.lang = "en-US";
+        const responseContent = document.getElementById("response-content");
+        const micButton = document.getElementById("start-listening-form");
+        const gifButton = document.getElementById(
+          "start-listening-form-with-gif"
+        );
+
+        function playAudio(audioSrc) {
+          const timestamp = new Date().getTime();
+          const updatedSrc = `${audioSrc}?v=${timestamp}`;
+          const audio = new Audio(updatedSrc);
+          audio.play();
+        }
+
+        function updateResponseContent(content, color) {
+          const formattedText = content.replace(/\n/, " "); // Replace line breaks with a space
+          responseContent.innerHTML = `<p style="color:${color};font-weight:bolder; white-space: pre-line;"><i class="bi bi-robot"></i> ${formattedText}</p>`;
+          playAudio("/static/output.mp3");
+
+          micButton.addEventListener("click", startRecognition);
+        }
+
+        function startRecognition() {
+          responseContent.innerHTML =
+            '<p style="color:#666;font-weight:bolder;"></p>';
+
+          // Show the GIF button when starting recognition
+          micButton.style.display = "none";
+          gifButton.style.display = "inline-block";
+
+          recognition.start();
+
+          // Disable microphone button after green response
+          micButton.removeEventListener("click", startRecognition);
+        }
+
+        recognition.onresult = function (event) {
+          const transcript = event.results[0][0].transcript;
+          console.log("You said:", transcript);
+
+          responseContent.innerHTML =
+            '<p style="color:red;font-weight:bolder;"><i class="bi bi-person-circle">  </i> ' +
+            transcript +
+            "</p>";
+          responseContent.innerHTML +=
+            '<p style="color:#666;font-weight:bolder;"><i class="bi bi-hourglass"></i> Processing...</p>';
+
+          fetch("/callannie/process_audio", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ transcript }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.response_content) {
+                const cleanResponse = JSON.stringify(
+                  data.response_content
+                ).replace(/\n/g, "");
+                updateResponseContent(cleanResponse, "green");
+              } else {
+                console.error("Error in AI response:", data.error);
+                const cleanError = data.error.replace(/\n/g, "");
+                responseContent.innerHTML =
+                  '<p style="color:#ff0000;font-weight:bolder;">Error in AI response ' +
+                  cleanError +
+                  "</p>";
+              }
+            })
+            .catch((error) => {
+              console.error("Error in fetch:", error);
+              responseContent.innerHTML =
+                '<p style="color:#ff0000;font-weight:bolder;">Error in fetch: ' +
+                error.message +
+                "</p>";
             });
-        });
-        </script>
+        };
 
+        recognition.onend = function () {
+          if (responseContent.innerHTML.trim() === "") {
+            responseContent.innerHTML =
+              '<p style="color:#ff0000;font-weight:bolder;">No response received. Please try again.</p>';
+          }
+
+          // Hide the GIF button after recognition ends
+          micButton.style.display = "inline-block";
+          gifButton.style.display = "none";
+        };
+
+        micButton.addEventListener("click", startRecognition);
+      });
+    </script>
 
     <!-- Bootstrap Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-</body>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+      crossorigin="anonymous"
+    ></script>
+  </body>
 </html>
-
-
