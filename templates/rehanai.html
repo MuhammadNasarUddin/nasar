@@ -1,0 +1,325 @@
+<!-- index.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RehanLabs | Voice Assistant</title>
+
+    <!-- External Stylesheets -->
+    <link rel="icon" href="/static/favicon.png" type="image/png" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+
+    <!-- Internal Styles -->
+    <style>
+      body {
+        font-family: monospace;
+        background-color: white;
+      }
+
+      h1 {
+        font-weight: 900;
+        color: black;
+      }
+
+      #response-content {
+        margin-top: 20px;
+      }
+
+      /* .instruction-marquee {
+            color:black;
+            white-space: nowrap;
+            overflow: hidden;
+            box-sizing: border-box;
+            font-weight: 500;
+        } */
+      #version-footer {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        font-size: 14px;
+        text-align: left;
+        color: #888;
+      }
+
+      /* Add this style block to your existing styles in the head section of your HTML */
+      .modal-body {
+        font-size: 14px;
+        line-height: 1.6;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Instruction Marquee -->
+    <div class="container col-lg-12 col-md-12 col-sm-12">
+      <!-- Main Content Container -->
+      <div class="container-fluid text-center mt-5">
+        <!-- Title -->
+        <h1 style="font-weight: 900">Rehan AI Voice Assistant</h1>
+
+        <div class="mt-4">
+          <div class="form-check form-check-inline">
+            <input
+              class="form-check-input"
+              type="radio"
+              name="languageRadio"
+              id="englishRadio"
+              value="en"
+              checked
+            />
+            <label class="form-check-label" for="englishRadio">English</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input
+              class="form-check-input"
+              type="radio"
+              name="languageRadio"
+              id="urduRadio"
+              value="ur"
+            />
+            <label class="form-check-label" for="urduRadio">Urdu</label>
+          </div>
+          <!-- Add more radio buttons for additional languages if needed -->
+        </div>
+
+        <!-- Ask Button -->
+        <br />
+
+        <img
+          id="start-listening-form"
+          src="/static/podcast2.png"
+          width="54"
+          height="54"
+          alt=""
+        />
+        <img
+          style="display: none"
+          width="90"
+          height="90"
+          id="start-listening-form-with-gif"
+          src="/static/podcast.gif"
+          alt="Animated GIF"
+        />
+
+        <!-- Response Content -->
+      </div>
+      <div class="mt-5 container-fluid" id="response-content"></div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="instructionModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="instructionModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="instructionModalLabel">
+              <strong>Instructions</strong>
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <p>
+              Welcome to Rehan AI Voice Assistant! Follow these steps to use the
+              voice assistant effectively:
+            </p>
+            <ol>
+              <li>
+                <strong>Language Selection:</strong> Choose your preferred
+                language by selecting either English or Urdu using the radio
+                buttons.
+              </li>
+              <li>
+                <strong>Start Listening:</strong> Click on the microphone button
+                to initiate voice recognition.
+              </li>
+              <li>
+                <strong>Ask Your Question:</strong> Speak clearly and ask your
+                question. Wait for the processing to complete.
+              </li>
+              <li>
+                <strong>Response:</strong> The assistant will provide a response
+                displayed below in the response area.
+              </li>
+              <li>
+                <strong>Additional Tips:</strong> For more details, check the
+                version information in the footer and feel free to explore the
+                instructions anytime by clicking the information icon.
+              </li>
+            </ol>
+            <p>Enjoy your interaction with Rehan AI Voice Assistant!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer id="version-footer" class="text-center mt-5 bg-black p-3">
+      <p>
+        &copy; 2024 RehanLabs. All rights reserved. | Version 2.0.0
+        <span
+          id="info-icon"
+          class="bi bi-info-circle-fill text-info"
+          style="cursor: pointer"
+        ></span>
+      </p>
+      <!-- You can replace "Version 2.0.0" with your actual version information -->
+
+      <!-- Information Modal Trigger Script -->
+      <script>
+        document
+          .getElementById("info-icon")
+          .addEventListener("click", function () {
+            $("#instructionModal").modal("show");
+          });
+      </script>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+      // Open the instruction modal when the page loads
+      $(document).ready(function () {
+        $("#instructionModal").modal("show");
+      });
+
+      document.addEventListener("DOMContentLoaded", function () {
+        const recognition = new webkitSpeechRecognition();
+        recognition.continuous = false;
+
+        // Default language
+        recognition.lang = "en-US";
+
+        const responseContent = document.getElementById("response-content");
+        const micButton = document.getElementById("start-listening-form");
+        const gifButton = document.getElementById(
+          "start-listening-form-with-gif"
+        );
+
+        // Language radio buttons
+        const englishRadio = document.getElementById("englishRadio");
+        const urduRadio = document.getElementById("urduRadio");
+
+        // Event listeners for language change
+        englishRadio.addEventListener("change", function () {
+          if (this.checked) {
+            recognition.lang = "en-US";
+          }
+        });
+
+        urduRadio.addEventListener("change", function () {
+          if (this.checked) {
+            recognition.lang = "ur-PK";
+          }
+        });
+
+        function playAudio(audioSrc) {
+          const timestamp = new Date().getTime();
+          const updatedSrc = `${audioSrc}?v=${timestamp}`;
+          const audio = new Audio(updatedSrc);
+          audio.play();
+        }
+
+        function updateResponseContent(content, color) {
+          const formattedText = content.replace(/\\n/g, "\n");
+          // Replace line breaks with a space
+          responseContent.innerHTML = `<p style="color:${color};font-weight:bolder; white-space: pre-line;">${formattedText}</p>`;
+          playAudio("/static/output.mp3");
+
+          micButton.addEventListener("click", startRecognition);
+        }
+
+        function startRecognition() {
+          responseContent.innerHTML =
+            '<p style="color:#666;font-weight:bolder;"></p>';
+
+          // Show the GIF button when starting recognition
+          micButton.style.display = "none";
+          gifButton.style.display = "inline-block";
+
+          recognition.start();
+
+          // Disable microphone button after green response
+          micButton.removeEventListener("click", startRecognition);
+        }
+
+        recognition.onresult = function (event) {
+          const transcript = event.results[0][0].transcript;
+          console.log("You said:", transcript);
+
+          responseContent.innerHTML =
+            '<p style="color:red;font-weight:bolder;"> ' + transcript + "</p>";
+          responseContent.innerHTML +=
+            '<p style="color:#666;font-weight:bolder;"><i class="bi bi-hourglass"></i> Processing...</p>';
+
+          fetch("/rehanai/process_audio", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ transcript }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.response_content) {
+                const cleanResponse = JSON.stringify(
+                  data.response_content
+                ).replace(/\n/g, "");
+                updateResponseContent(cleanResponse, "green");
+              } else {
+                console.error("Error in AI response:", data.error);
+                const cleanError = data.error.replace(/\n/g, "");
+                responseContent.innerHTML =
+                  '<p style="color:#ff0000;font-weight:bolder;">Error in AI response ' +
+                  cleanError +
+                  "</p>";
+              }
+            })
+            .catch((error) => {
+              console.error("Error in fetch:", error);
+              responseContent.innerHTML =
+                '<p style="color:#ff0000;font-weight:bolder;">Error in fetch: ' +
+                error.message +
+                "</p>";
+            });
+        };
+
+        recognition.onend = function () {
+          if (responseContent.innerHTML.trim() === "") {
+            responseContent.innerHTML =
+              '<p style="color:#ff0000;font-weight:bolder;">No response received. Please try again.</p>';
+          }
+
+          // Hide the GIF button after recognition ends
+          micButton.style.display = "inline-block";
+          gifButton.style.display = "none";
+        };
+
+        micButton.addEventListener("click", startRecognition);
+      });
+    </script>
+
+    <!-- Bootstrap Scripts -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>
