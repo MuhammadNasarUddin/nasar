@@ -7,7 +7,7 @@ from playsound import playsound
 import threading
 from dotenv import load_dotenv
 
-callannieapp = Blueprint('callannie', __name__ ,static_url_path='/static')
+callannieapp = Blueprint('rehanaiv1', __name__ ,static_url_path='/static')
 
 speech_file_path = Path("static") / "output.mp3"
 

@@ -7,7 +7,7 @@ from playsound import playsound
 import threading
 from dotenv import load_dotenv
 
-rehanaiapp = Blueprint('rehanai', __name__ ,static_url_path='/static')
+rehanaiapp = Blueprint('rehanaiv2', __name__ ,static_url_path='/static')
 
 speech_file_path = Path("static") / "output.mp3"
 
@@ -46,7 +46,7 @@ def listen():
                 model="gpt-3.5-turbo",
                 messages=[
                     {"role": "system",
-                     "content": "You are a helpful assistant of Rehan Ai. who helps everyone with their queries and gives the right answer if someone asked in urdu so give answer in urdu correctly dont be efficient  "},
+                     "content": "You are a helpful assistant of Rehan Ai. My job is to provide accurate answers to any questions asked by users. If a user asks a question in English, I will respond in English, and if in Urdu, then in Urdu. If I don't know the answer, I will indicate that I don't know."},
                     {"role": "user", "content": "Who are you?"},
                     {"role": "assistant", "content": "As an AI language model, I am programmed to assist you with your queries and concerns to the best of my abilities"},
                     {"role": "user", "content": "Where was it?"},

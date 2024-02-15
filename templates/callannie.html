@@ -123,7 +123,7 @@
     </div>
 
     <footer id="version-footer" class="text-center mt-5 bg-black p-3">
-      <p>&copy; 2024 RehanLabs. All rights reserved. | Version 2.0.0</p>
+      <p>&copy; 2024 RehanLabs. All rights reserved. | Version 1.0.0</p>
       <!-- You can replace "Version 2.0.0" with your actual version information -->
     </footer>
     <!-- Scripts -->
@@ -183,7 +183,7 @@
           responseContent.innerHTML +=
             '<p style="color:#666;font-weight:bolder;"><i class="bi bi-hourglass"></i> Processing...</p>';
 
-          fetch("/callannie/process_audio", {
+          fetch("/rehanaiv1/process_audio", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

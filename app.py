@@ -7,7 +7,7 @@ from audiototext import audiototext_app
 from mp4 import mp4_app
 from resizer import resizer_app
 from supertec import supertec_app
-# from callannie import callannieapp
+from callannie import callannieapp
 from rehanai import rehanaiapp
 
 app = Flask(__name__)
@@ -26,8 +26,8 @@ app.register_blueprint(audiototext_app, url_prefix='/wavtotext')
 app.register_blueprint(mp4_app, url_prefix='/mp4')
 app.register_blueprint(resizer_app, url_prefix='/resizer')
 app.register_blueprint(supertec_app, url_prefix='/bot')
-# app.register_blueprint(callannieapp, url_prefix='/callannie')
-app.register_blueprint(rehanaiapp, url_prefix='/rehanai')
+app.register_blueprint(callannieapp, url_prefix='/rehanaiv1')
+app.register_blueprint(rehanaiapp, url_prefix='/rehanaiv2')
 
 
 if __name__ == "__main__":
