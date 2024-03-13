@@ -4,7 +4,6 @@ from bot import supertec_bot
 supertec = supertec_bot()
 
 supertec_app = Blueprint('bot',__name__)
-supertec_app.secret_key = 'nasar123'  # Set a secret key for session management
 message_history = []
 
 @supertec_app.route('/')
@@ -16,20 +15,27 @@ def index():
 @supertec_app.route('/chat', methods=['POST'])
 def chat():
     if request.method == 'POST':
-        user_input = request.form['user_input']
-        try:
-            answer = supertec.user_chat(user_input)
-        except Exception as e:
-            # Handle the exception, you might want to log the error or take other actions
-            error_message = f"Error: {e}"
-            # For simplicity, let's display an error message instead of the bot's response
-            answer = "Apologies, there was an error processing your request."
+        # Check if 'user_input' is in the form data
+        if 'user_input' in request.form:
+            user_input = request.form['user_input']
+            try:
+                answer = supertec.user_chat(user_input)
+            except Exception as e:
+                # Handle the exception, you might want to log the error or take other actions
+                error_message = f"Error: {e}"
+                # For simplicity, let's display an error message instead of the bot's response
+                answer = "Apologies, there was an error processing your request."
 
-        # Append the user and bot messages to message_history
-        message_history.append({'type': 'user', 'content': user_input})
-        message_history.append({'type': 'bot', 'content': answer})
+            # Append the user and bot messages to message_history
+            message_history.append({'type': 'user', 'content': user_input})
+            message_history.append({'type': 'bot', 'content': answer})
 
-        return render_template('supertec.html', messages=message_history)
+            return render_template('supertec.html', messages=message_history)
+
+        else:
+            # Handle the case where 'user_input' is not present in the form data
+            flash('Invalid request. Please provide a valid input.', 'error')
+            return redirect(url_for('index'))
 
 @supertec_app.route('/login', methods=['POST', 'GET'])
 def login():
@@ -45,11 +51,4 @@ def login():
     return render_template('login.html')
 
 
-
-@supertec_app.route('/logout', methods=['POST'])
-def logout():
-    if 'logged_in' in session:
-        session.pop('logged_in')  # Remove the 'logged_in' session variable
-        flash('You have been logged out.', 'info')
-    return redirect(url_for('bot.login'))
 

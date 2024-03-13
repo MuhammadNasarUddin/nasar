@@ -11,7 +11,7 @@ class supertec_bot:
 
         load_dotenv()
         self.client = openai.OpenAI(api_key=os.environ['openai_api_key'])
-        self.assistant_id = "asst_3hc27jSOBuRwWx4dzDOUgAFt"
+        self.assistant_id = "asst_ICQm5b3vteYKDU2kJZTcpyJx"
 
     def update_assistant(self):
         function_detail = {
@@ -107,7 +107,7 @@ class supertec_bot:
                 thread_id=thread.id,
                 run_id=run.id
             )
-            print(f"sttatus: {run.status}")
+            print(f"status: {run.status}")
 
             if run.status == 'requires_action':
                 tool_outputs = []
@@ -154,3 +154,4 @@ class supertec_bot:
             
 # abc = supertec_bot()
 # abc.update_assistant()
+
