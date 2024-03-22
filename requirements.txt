@@ -14,6 +14,7 @@ comm==0.2.0
 debugpy==1.8.0
 decorator==4.4.2
 distro==1.9.0
+elevenlabs==1.0.0b1
 exceptiongroup==1.2.0
 executing==2.0.1
 fastjsonschema==2.19.0
