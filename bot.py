@@ -66,7 +66,7 @@ class supertec_bot:
             name="Supertec Admin Support Chat Bot",
             instructions="You are a personal SuperTec Admin  support chatbot. your duty is to  provide all single information from supertec",
             tools=[function_attendance,function_detail],
-            model="gpt-4",
+            model="gpt-4-turbo",
         )
 
     def get_detail(query):
@@ -152,6 +152,6 @@ class supertec_bot:
                 answer = messages.data[0].content[0].text.value
                 return answer
             
-abc = supertec_bot()
-abc.update_assistant()
+# abc = supertec_bot()
+# abc.update_assistant()
 

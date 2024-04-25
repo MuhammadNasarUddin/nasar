@@ -20,7 +20,7 @@
 
     function showProcessing() {
       var chatMessages = document.getElementById("chat-messages");
-      chatMessages.innerHTML += '<div class="bot-message processing-message" style="background-color:green !important;"><i class="bi bi-chat-dots-fill"></i> Typing...</div>';
+      chatMessages.innerHTML += '<div class="bot-message processing-message" style="background-color:green !important;">Bot is Processing...</div>';
       scrollToBottom();
     }
 
@@ -75,8 +75,10 @@
       border-radius: 6px;
       padding: 10px;
       margin-bottom: 15px;
+      max-width: 100%; 
+      overflow-wrap: break-word;
     }
-
+    
     .input-group {
       margin-top: 15px;
     }
@@ -105,7 +107,7 @@
           {% if message.type == 'user' %}
           <div class="user-message"><i class="bi bi-person-fill"></i> {{ message.content }}</div>
           {% else %}
-          <pre class="bot-message"><i class="bi bi-robot"></i> {{ message.content }}</pre>
+          <div class="bot-message"><i class="bi bi-robot"></i> {{ message.content }}</div>
           {% endif %}
           {% endfor %}
         </div>
