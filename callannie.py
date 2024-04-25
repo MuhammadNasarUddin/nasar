@@ -6,8 +6,7 @@ from pathlib import Path
 from playsound import playsound
 import threading
 from dotenv import load_dotenv
-from elevenlabs import Voice, VoiceSettings, play , save ,stream
-from elevenlabs.client import ElevenLabs
+
 
 
 callannieapp = Blueprint('rehanaiv1', __name__ ,static_url_path='/static')
@@ -19,9 +18,6 @@ speech_file_path = Path("static") / "output.mp3"
 load_dotenv()
 
 
-elevenai = ElevenLabs(
-  api_key=os.environ['XI_API_KEY'], # Defaults to ELEVEN_API_KEY
-)
 
 
 client = OpenAI(api_key=os.environ['openai_api_key'])
@@ -66,15 +62,12 @@ def listen():
             # Get AI response content
             response_content = response.choices[0].message.content
 
-            audio = elevenai.generate(
-                text=response_content,
-                voice=Voice(
-                voice_id=os.environ['voice_id'],
-                settings=VoiceSettings(stability=0.71, similarity_boost=0.5, style=0.0, use_speaker_boost=True)
-                )
+            audio_response = client.audio.speech.create(
+                model="tts-1",
+                voice="echo",
+                input=response_content
             )
-
-            save(audio, speech_file_path)
+            audio_response.stream_to_file(speech_file_path)
 
 
             res_choice = {

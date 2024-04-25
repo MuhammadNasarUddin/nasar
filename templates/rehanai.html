@@ -211,20 +211,15 @@
 
     <!-- Scripts -->
     <script>
-      // Open the instruction modal when the page loads
-  
-      document.addEventListener("DOMContentLoaded", function () {
+     document.addEventListener("DOMContentLoaded", function () {
+    if ('webkitSpeechRecognition' in window) {
         const recognition = new webkitSpeechRecognition();
         recognition.continuous = false;
-
-        // Default language
-        recognition.lang = "en-US";
+        recognition.lang = "en-US"; // Default language
 
         const responseContent = document.getElementById("response-content");
         const micButton = document.getElementById("start-listening-form");
-        const gifButton = document.getElementById(
-          "start-listening-form-with-gif"
-        );
+        const gifButton = document.getElementById("start-listening-form-with-gif");
 
         // Language radio buttons
         const englishRadio = document.getElementById("englishRadio");
@@ -232,101 +227,84 @@
 
         // Event listeners for language change
         englishRadio.addEventListener("change", function () {
-          if (this.checked) {
-            recognition.lang = "en-US";
-          }
+            if (this.checked) {
+                recognition.lang = "en-US";
+            }
         });
 
         urduRadio.addEventListener("change", function () {
-          if (this.checked) {
-            recognition.lang = "ur-PK";
-          }
+            if (this.checked) {
+                recognition.lang = "ur-PK";
+            }
         });
 
         function playAudio(audioSrc) {
-          const timestamp = new Date().getTime();
-          const updatedSrc = `${audioSrc}?v=${timestamp}`;
-          const audio = new Audio(updatedSrc);
-          audio.play();
+            const timestamp = new Date().getTime();
+            const updatedSrc = `${audioSrc}?v=${timestamp}`;
+            const audio = new Audio(updatedSrc);
+            audio.play();
         }
 
         function updateResponseContent(content, color) {
-          const formattedText = content.replace(/\\n/g, "\n");
-          // Replace line breaks with a space
-          responseContent.innerHTML = `<p style="color:${color};font-weight:bolder; white-space: pre-line;">${formattedText}</p>`;
-          playAudio("/static/output.mp3");
+            const formattedText = content.replace(/\\n/g, "\n");
+            responseContent.innerHTML = `<p style="color:${color};font-weight:bolder; white-space: pre-line;">${formattedText}</p>`;
+            playAudio("/static/output.mp3");
 
-          micButton.addEventListener("click", startRecognition);
+            micButton.addEventListener("click", startRecognition);
         }
 
         function startRecognition() {
-          responseContent.innerHTML =
-            '<p style="color:#666;font-weight:bolder;"></p>';
-
-          // Show the GIF button when starting recognition
-          micButton.style.display = "none";
-          gifButton.style.display = "inline-block";
-
-          recognition.start();
-
-          // Disable microphone button after green response
-          micButton.removeEventListener("click", startRecognition);
+            responseContent.innerHTML = '<p style="color:#666;font-weight:bolder;"></p>';
+            micButton.style.display = "none";
+            gifButton.style.display = "inline-block";
+            recognition.start();
+            micButton.removeEventListener("click", startRecognition);
         }
 
         recognition.onresult = function (event) {
-          const transcript = event.results[0][0].transcript;
-          console.log("You said:", transcript);
+            const transcript = event.results[0][0].transcript;
+            responseContent.innerHTML = '<p style="color:red;font-weight:bolder;"> ' + transcript + "</p>";
+            responseContent.innerHTML += '<p style="color:#666;font-weight:bolder;"><i class="bi bi-hourglass"></i> Processing...</p>';
 
-          responseContent.innerHTML =
-            '<p style="color:red;font-weight:bolder;"> ' + transcript + "</p>";
-          responseContent.innerHTML +=
-            '<p style="color:#666;font-weight:bolder;"><i class="bi bi-hourglass"></i> Processing...</p>';
-
-          fetch("/rehanaiv2/process_audio", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ transcript }),
-          })
+            fetch("/rehanaiv2/process_audio", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ transcript }),
+            })
             .then((response) => response.json())
             .then((data) => {
-              if (data.response_content) {
-                const cleanResponse = JSON.stringify(
-                  data.response_content
-                ).replace(/\n/g, "");
-                updateResponseContent(cleanResponse, "green");
-              } else {
-                console.error("Error in AI response:", data.error);
-                const cleanError = data.error.replace(/\n/g, "");
-                responseContent.innerHTML =
-                  '<p style="color:#ff0000;font-weight:bolder;">Error in AI response ' +
-                  cleanError +
-                  "</p>";
-              }
+                if (data.response_content) {
+                    const cleanResponse = JSON.stringify(data.response_content).replace(/\n/g, "");
+                    updateResponseContent(cleanResponse, "green");
+                } else {
+                    console.error("Error in AI response:", data.error);
+                    const cleanError = data.error.replace(/\n/g, "");
+                    responseContent.innerHTML = '<p style="color:#ff0000;font-weight:bolder;">Error in AI response ' + cleanError + "</p>";
+                }
             })
             .catch((error) => {
-              console.error("Error in fetch:", error);
-              responseContent.innerHTML =
-                '<p style="color:#ff0000;font-weight:bolder;">Error in fetch: ' +
-                error.message +
-                "</p>";
+                console.error("Error in fetch:", error);
+                responseContent.innerHTML = '<p style="color:#ff0000;font-weight:bolder;">Error in fetch: ' + error.message + "</p>";
             });
         };
 
         recognition.onend = function () {
-          if (responseContent.innerHTML.trim() === "") {
-            responseContent.innerHTML =
-              '<p style="color:#ff0000;font-weight:bolder;">No response received. Please try again.</p>';
-          }
-
-          // Hide the GIF button after recognition ends
-          micButton.style.display = "inline-block";
-          gifButton.style.display = "none";
+            if (responseContent.innerHTML.trim() === "") {
+                responseContent.innerHTML = '<p style="color:#ff0000;font-weight:bolder;">No response received. Please try again.</p>';
+            }
+            micButton.style.display = "inline-block";
+            gifButton.style.display = "none";
         };
 
         micButton.addEventListener("click", startRecognition);
-      });
+    } else {
+        // Provide a fallback option or display a message indicating that speech recognition is not supported
+        alert("Speech recognition is not supported in this browser.");
+    }
+});
+
     </script>
 
     <!-- Bootstrap Scripts -->

@@ -11,7 +11,7 @@ class supertec_bot:
 
         load_dotenv()
         self.client = openai.OpenAI(api_key=os.environ['openai_api_key'])
-        self.assistant_id = "asst_ICQm5b3vteYKDU2kJZTcpyJx"
+        self.assistant_id = "asst_LlxSuB31Dc3AZnHSyfZynUZ9"
 
     def update_assistant(self):
         function_detail = {
@@ -66,7 +66,7 @@ class supertec_bot:
             name="Supertec Admin Support Chat Bot",
             instructions="You are a personal SuperTec Admin  support chatbot. your duty is to  provide all single information from supertec",
             tools=[function_attendance,function_detail],
-            model="gpt-4-1106-preview",
+            model="gpt-4",
         )
 
     def get_detail(query):
@@ -152,6 +152,6 @@ class supertec_bot:
                 answer = messages.data[0].content[0].text.value
                 return answer
             
-# abc = supertec_bot()
-# abc.update_assistant()
+abc = supertec_bot()
+abc.update_assistant()
 
