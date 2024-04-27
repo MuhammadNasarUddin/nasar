@@ -10,6 +10,7 @@ from supertec import supertec_app
 from callannie import callannieapp
 from rehanai import rehanaiapp
 from voicetovoice import rehanaiv3app
+from didxapp import didx_app
 app = Flask(__name__)
 app.secret_key = 'nasar123'  # Set a secret key for session management
 
@@ -29,7 +30,7 @@ app.register_blueprint(supertec_app, url_prefix='/bot')
 app.register_blueprint(callannieapp, url_prefix='/rehanaiv1')
 app.register_blueprint(rehanaiapp, url_prefix='/rehanaiv2')
 app.register_blueprint(rehanaiv3app, url_prefix='/rehanaiv3')
-
+app.register_blueprint(didx_app, url_prefix='/DIDxBot')
 
 
 if __name__ == "__main__":
