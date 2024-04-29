@@ -24,13 +24,20 @@ def chat():
             except Exception as e:
                 answer = "Apologies, I am unable to process your request at the moment."
 
+            # Get the current message history
             message_history = get_message_history()
+
+            # Append the user's message and bot's response to the message history
             message_history.append({'type': 'user', 'content': user_input})
             message_history.append({'type': 'bot', 'content': answer})
+
+            # Update the session with the new message history
             session['message_history'] = message_history
 
+            # Render the template with the updated message history
             return render_template('DIDxBot.html', messages=message_history)
         else:
             flash('Invalid input. Please try again.')
             return redirect(url_for('home'))
+
 
