@@ -49,7 +49,6 @@ class Didx_admin_bot:
         # Retrieve the messages
         messages = self.client.beta.threads.messages.list(thread_id=thread.id, run_id=run.id)
         messages_list = list(messages)
-        print(f"Messages: {messages_list}")
         messages_content = messages_list[0].content[0].text
         print(f"Messages Content: {messages_content}")
         cleaned_text = re.sub('【.*?†.*】', '', messages_content.value)
