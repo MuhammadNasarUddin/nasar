@@ -11,8 +11,11 @@ from callannie import callannieapp
 from rehanai import rehanaiapp
 from voicetovoice import rehanaiv3app
 from didxapp import didx_app
+from flask_cors import CORS
 app = Flask(__name__)
 app.secret_key = 'nasar123'  # Set a secret key for session management
+CORS(app, resources={r"/*": {"origins": "https://login.socialmediaincubator.co/admin/dashboard.php"}})
+
 
 app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024  # Allow up to 10 megabytes
 
