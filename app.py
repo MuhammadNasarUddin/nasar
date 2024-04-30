@@ -12,9 +12,11 @@ from rehanai import rehanaiapp
 from voicetovoice import rehanaiv3app
 from didxapp import didx_app
 from flask_cors import CORS
+from didx_blueprint import didx_blueprint
+
 app = Flask(__name__)
 app.secret_key = 'nasar123'  # Set a secret key for session management
-CORS(app, resources={r"/*": {"origins": "https://login.socialmediaincubator.co/admin/dashboard.php"}})
+CORS(app, resources={r"/*": {"origins": "https://admin.didx.net/chat/"}})
 
 
 app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024  # Allow up to 10 megabytes
@@ -34,6 +36,8 @@ app.register_blueprint(callannieapp, url_prefix='/rehanaiv1')
 app.register_blueprint(rehanaiapp, url_prefix='/rehanaiv2')
 app.register_blueprint(rehanaiv3app, url_prefix='/rehanaiv3')
 app.register_blueprint(didx_app, url_prefix='/DIDxBot')
+didx_api.register_blueprint(didx_blueprint,url_prefix='/didx_blueprint)
+
 
 
 if __name__ == "__main__":
